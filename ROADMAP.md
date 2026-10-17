@@ -1,13 +1,13 @@
 # DubHacks 2026 Roadmap
 
-Oct 17, 2026 · exported from the live roadmap doc: https://claude.ai/code/artifact/06761220-6439-4e7a-b6c2-09abbf984f40 (ask Falisha for access). This file is a snapshot; beebot PLAN.md and CONTRACT.md win on any conflict.
+Oct 17, 2026 · snapshot of the live roadmap doc: https://claude.ai/code/artifact/06761220-6439-4e7a-b6c2-09abbf984f40 (ask Falisha for access). beebot PLAN.md and CONTRACT.md win on any conflict.
 
 ## Summary
 
-We build BeeBot as written in the beebot repo: field video goes through Perceptron for bee tracking, analytics and search, then becomes a pollination map and a robot pollinator route. The 20-hour plan fits the deadlines if hour 0 is Sat 12:30 PM, but it has no step for the **Saturday 10:30 PM draft**, which is required to be judged at all.
+We build BeeBot as written in the beebot repo: field video goes through Perceptron for bee tracking, analytics and search, then becomes a pollination map and a robot pollinator route. The team starts at 2:30 PM, so the 20-hour plan has about 19.5 hours left before the final, sleep included. It fits only with a stricter cut list, and the plan has no step for the **Saturday 10:30 PM draft**, which is required to be judged at all.
 
 - **Source of truth:** [b-ananya/beebot](https://github.com/b-ananya/beebot) (PLAN.md, CONTRACT.md, README.md, DATA\_NOTES.md, data release `data-v1`). The claude-gc design doc describes an older product and stack; it should be replaced (draft changes at the end).
-- **Hour 0 = Sat Oct 17, 12:30 PM PDT** (the plan commit landed at 12:30:01 PM, and the context notes say coding may start at 12:30). Each plan hour adds one clock hour.
+- **Hour 0 = Sat Oct 17, 2:30 PM PDT**, when the team starts working. Official hacking opened at 12:30 PM (the plan commit landed at 12:30:01 PM). Raika's first steps (shared client, cache, tracking start, G1 at 2:30 PM) are unchanged.
 - **Deadlines (Devpost):** draft before Sat Oct 17, 10:30 PM; final before **Sun Oct 18, 10:00 AM PDT**. Judging Sun 11:30 AM to 2:00 PM; winners 4:00 PM.
 - **Judging weights (Devpost):** functionality 30%, track applicability 30%, design 20%, creativity 20%.
 - **Two decisions for humans:** Perceptron model (Isaac vs Mk1.5) and confirming who owns each piece of the split.
@@ -16,32 +16,36 @@ Checked against the [Devpost overview](https://dubhacks-2026.devpost.com/), [dat
 
 ## Schedule in clock time
 
-Hour 0 is Sat 12:30 PM, so the 20-hour plan ends Sun 8:30 AM with 90 minutes to spare. The draft deadline (10:30 PM) falls between G2 and G3, so it gets its own step, D0, at 9:30 PM.
+Hour 0 is Sat 2:30 PM. Everyone works through the 10:30 PM draft and the 1:00 AM Phase 1 demo, then the team sleeps in two shifts (4 hours, then 3.5 hours) so two people are always awake. The final goes in at 9:30 AM, 30 minutes before the 10:00 AM deadline.
 
 ```text
-Sat 12:30 PM  h0   Start. Phase 1: video analysis (must-have) runs to 12:30 AM
-Sat  2:30 PM  h2   G1 contract frozen, shared Perceptron client ready
-Sat  4:30 PM  h4   Standup
-Sat  8:30 PM  h8   G2 real tracks in the app. Standup
-Sat  9:30 PM  h9   D0 Devpost draft submitted (due 10:30 PM)
-Sun 12:30 AM  h12  G3 Phase 1 demo works end to end. Standup. Phase 2: field planner
-Sun  4:30 AM  h16  Standup
-Sun  5:30 AM  h17  G4 code freeze, numbers locked. Phase 3: freeze and present
-Sun  7:30 AM  h19  G5 submission-ready
-Sun  8:30 AM  h20  Final Devpost submission (due 10:00 AM PDT)
+Sat  2:30 PM  Start. G1 contract frozen, shared Perceptron client ready (Raika, unchanged)
+              Phase 1: video analysis (must-have) until 1:00 AM. Everyone awake
+Sat  4:30 PM  Standup
+Sat  8:30 PM  G2 real tracks in the app. Standup
+Sat  9:30 PM  D0 Devpost draft submitted (due 10:30 PM)
+Sun  1:00 AM  G3 Phase 1 demo works end to end. Standup. Phase 2: field planner
+              Raika and Falisha sleep 1:00-5:00 AM; Ananya and Flora work
+Sun  4:30 AM  G4 Phase 2 numbers locked
+Sun  5:00 AM  Handoff standup. Ananya and Flora sleep 5:00-8:30 AM; Raika and Falisha work
+Sun  8:30 AM  G5 submission-ready. Everyone awake: last rehearsal, fact-check
+Sun  9:30 AM  Final Devpost submission (due 10:00 AM PDT)
 ```
 
-| Gate | Plan hour | Clock (PDT) | Done when | Owner |
+| Gate | Clock (PDT) | Done when | Owner | Awake |
 | --- | --- | --- | --- | --- |
-| G1 contract frozen | h2 | Sat 2:30 PM | CONTRACT.md frozen; first Perceptron call parses; everyone runs the app on mock | Ananya, Raika |
-| G2 real tracks in the app | h8 | Sat 8:30 PM | Real tracks for 5 clips pass validate and load in the app | Raika |
-| D0 Devpost draft | h9 | Sat 9:30 PM (due 10:30 PM) | Names, Discords, tracks, repo link submitted | Falisha |
-| G3 Phase 1 works end to end | h12 | Sun 12:30 AM | Tracking, analytics, search demo; `eval/report.json` v1 | Falisha, Ananya |
-| G4 code freeze, numbers locked | h17 | Sun 5:30 AM | Field map and robot route done; numbers final | Ananya, Flora |
-| G5 submission-ready | h19 | Sun 7:30 AM | Offline demo, backup video, rehearsed | Falisha |
-| Final submitted | h20 | Sun 8:30 AM (due 10:00 AM) | Devpost final with all code pushed | Falisha |
+| G1 contract frozen | Sat 2:30 PM | CONTRACT.md frozen; shared client parses a call; everyone runs the app on mock | Raika, Ananya | All |
+| G2 real tracks in the app | Sat 8:30 PM | Real tracks for 5 clips pass validate and load in the app | Raika | All |
+| D0 Devpost draft | Sat 9:30 PM (due 10:30 PM) | Names, Discords, tracks, repo link submitted | Flora (backup Falisha) | All |
+| G3 Phase 1 works end to end | Sun 1:00 AM | Tracking, analytics, search demo; `eval/report.json` v1; Phase 1 backup recording | Falisha, Ananya | All |
+| G4 Phase 2 numbers locked | Sun 4:30 AM | Field maps, plan JSON and route videos pushed | Ananya, Flora | Ananya, Flora |
+| Handoff standup | Sun 5:00 AM | Night shift briefs the morning shift | All | All, briefly |
+| G5 submission-ready | Sun 8:30 AM | Field view in the app, offline mode, final backup video | Falisha, Raika | Raika, Falisha |
+| Final submitted | Sun 9:30 AM (due 10:00 AM) | Fact-checked Devpost final, all code pushed | Flora (backup Falisha) | All |
 
-It is now about 1:30 PM, plan hour 1. Workshops run 1:30 to 4:30 PM and dinner 6:00 to 7:00 PM, so whoever attends the Perceptron workshop should feed what they learn into A1.
+**Sleep shifts (proposal; confirm at the 8:30 PM standup).** Raika and Falisha sleep 1:00 to 5:00 AM while Ananya and Flora finish Phase 2. Ananya and Flora sleep 5:00 to 8:30 AM while Raika and Falisha put Phase 2 into the app and freeze the demo. Everyone is up from 8:30 AM for the last rehearsal, the fact-check and the final.
+
+Starting at 2:30 PM and sleeping costs the team about two hours of plan time plus 4 hours each, so the cut list gets stricter: no stretch goals at all; flower state (A5) is cut if it isn't working at G2; the field view drops to the patch-level plan if G4 slips past 4:30 AM; Phase 2 keeps only the planner, field map and one route video; and two rehearsals instead of three. Workshops run until 4:30 PM and dinner is 6:00 to 7:00 PM.
 
 ## Team split: who owns what
 
@@ -66,19 +70,19 @@ Perception is split into four pieces, one per person, so all four work on it at 
 | --- | --- | --- | --- |
 | Raika | P1 | Offline cache freeze and `analyze_clip(path)` for the upload button (A7) | `perception/` core, `tracks/` |
 | Ananya | P2 | Eval (B3, B4), field maps (B5, B6), number fact-check (B7) | `clips/manifest.json`, `truth/`, `eval/`, `field/`, CONTRACT.md |
-| Falisha | P3 | App (D1 to D7), deck, Devpost, demo video | `app/`, `search/`, requirements.txt |
-| Flora | P4 | VEYZL setup and log, then planner and sim (C1 to C7) | `plan/`, `sim/`, `rollouts/`, `docs/veyzl.md` |
+| Falisha | P3 | App (D1 to D6): video, analytics, search box, field view, offline mode, hosted link | `app/`, `search/`, requirements.txt |
+| Flora | P4 | VEYZL setup and log, planner and sim (C1 to C7), Devpost page with draft and final, deck, demo video, Q&A sheet | `plan/`, `sim/`, `rollouts/`, `docs/veyzl.md` |
 
 **Fable.** Raika uses it first, on the client, the tracking parser and the batch. Ananya uses it second, on flower and event parsing, the eval script and the field-map builder. If Flora's OR-Tools solver (C3) stalls past 8:30 PM, Ananya pairs on it with Fable.
 
-**Flora and VEYZL.** Flora finishes connecting VEYZL to the beebot repo first (target: the 4:30 PM standup), runs the small model test, then starts the planner. The planner feeds nobody until 12:30 AM, so a late start costs nothing downstream. The VEYZL track needs a real audit on a pull request and proof that the findings changed the build, so Flora keeps `docs/veyzl.md` (finding, change, PR link) and everyone merges through PRs, not direct pushes to `main`.
+**Flora and VEYZL.** Flora finishes connecting VEYZL to the beebot repo first (target: the 4:30 PM standup), runs the small model test, then starts the planner and the Devpost page. The 9:30 PM draft and the 9:30 AM final are Flora's, with Falisha as backup. The planner feeds nobody until 1:00 AM, so a late start costs nothing downstream. The VEYZL track needs a real audit on a pull request and proof that the findings changed the build, so Flora keeps `docs/veyzl.md` (finding, change, PR link) and everyone merges through PRs, not direct pushes to `main`.
 
 Rules that keep work from overlapping:
 
 - **Files have one owner.** Anyone who needs a change asks the owner in team chat.
 - **One branch per person** (`raika/...`, `ananya/...`, `falisha/...`, `flora/...`), merged by small PRs.
 - **Need another piece's output? Read its file, don't re-ask Perceptron.**
-- **Standups at 4:30 PM, 8:30 PM, 12:30 AM and 4:30 AM:** what shipped, what's blocked, credit spent.
+- **Standups at 4:30 PM, 8:30 PM, 1:00 AM and 5:00 AM:** what shipped, what's blocked, credit spent.
 
 ### Perceptron credits: never pay twice
 
@@ -102,6 +106,26 @@ Each person pays for their own piece on their own key, so spending spreads over 
 
 Open point for Raika at A1: if Perceptron file IDs belong to one account, each key uploads the clips its piece needs once, and the manifest stores one `file_id` per key.
 
+### Falisha's plan
+
+Falisha owns the Streamlit app and the search piece of perception (P3). Flora now owns the Devpost page, deck and demo video, so Falisha's list is the app plus search.
+
+| When (PDT) | Step | Done when | Needs from |
+| --- | --- | --- | --- |
+| 2:30 to 3:30 PM | D1: Streamlit skeleton that loads `clips/manifest.json` and `tracks/mock/`; GitHub Projects board | All four teammates run the app | Data release (`data-v1`), already out |
+| 3:30 to 5:30 PM | D2: video panel with bee box, trail, flower boxes, visit flashes | Plays smoothly on one clip | Mock tracks; `truth/` for the farm clips |
+| 2:30 to 5:30 PM | P3 v1: `search/index.json` from truth and mock events first (no API), then captions on 5 clips through Raika's client | "bee lands on flower" returns timestamps | Raika's client at 2:30 PM |
+| 5:30 to 8:30 PM | D3: analytics panel (visits per flower, dwell, heatmap, timeline) | Renders from mock | Nothing new |
+| 8:30 PM | Switch the app to real tracks (G2) | App loads `tracks/*.json` | Raika's real tracks |
+| 8:30 PM to 1:00 AM | D4: search box that jumps the video, index over all clips, live-question toggle; record the Phase 1 backup clip | G3 demo works end to end | Ananya's `eval/report.json` |
+| 1:00 to 5:00 AM | Sleep |  |  |
+| 5:00 to 8:30 AM | D5 and D6: field view (map, route vs baselines), offline mode, upload-your-own-clip, hosted deploy, final backup video | G5: app runs with Wi-Fi off | Ananya's `field/`, Flora's `plan/` and route videos, Raika's `analyze_clip(path)` |
+| 8:30 to 9:30 AM | Drive the demo in the last rehearsal | Fits in 2:30 | Flora's deck |
+
+What the others need from Falisha: the app running for everyone by 3:30 PM, `search/index.json`, any `requirements.txt` changes (Falisha owns that file), and the backup recording Flora uses for the Devpost video.
+
+What to start right now: download the data release and run `validate.py`, build the D1 skeleton on mock data, and write the search prompts.
+
 ## Demo app: Streamlit, plus a hosted link
 
 **Recommendation: build the app in Streamlit as PLAN.md says, run it locally on stage, and deploy the same app to Streamlit Community Cloud after G3 for a live link on Devpost.** Don't rebuild it as a Next.js app on Vercel.
@@ -123,11 +147,11 @@ The demo is PLAN.md's 3-minute story, rehearsed to 2:30 so there is room for one
 5. **Field view (35 s):** zoom out to the 9-station pollination map with deficits, then the robot's route beside the three baselines, with the deficit-covered score.
 6. **Honesty and next steps (10 s):** one accuracy number from `eval/report.json`, said as "agreement with a reference tracker," plus the three caveats from PLAN.md's "Say on stage."
 
-Prepare by Sun 7:30 AM (G5): three timed rehearsals, a Q&A sheet (C7's assumptions paragraph is the core of it), the backup screen recording, and a laptop that runs the app with Wi-Fi off. At least one teammate must be at judging, Sun 11:30 AM to 2:00 PM.
+Prepare by Sun 8:30 AM (G5): two timed rehearsals (Raika and Falisha before 8:30 AM, everyone at 8:30 AM), a Q&A sheet (C7's assumptions paragraph is the core of it), the backup screen recording, and a laptop that runs the app with Wi-Fi off. At least one teammate must be at judging, Sun 11:30 AM to 2:00 PM.
 
 ## Devpost submission checklist
 
-Falisha owns submission and Ananya fact-checks the numbers (B7). Devpost says a team that misses the Saturday draft cannot be judged on Sunday.
+Flora owns submission (Falisha is backup) and Ananya fact-checks the numbers (B7). Devpost says a team that misses the Saturday draft cannot be judged on Sunday.
 
 **Draft, before Sat 10:30 PM (aim for 9:30 PM):**
 
@@ -137,7 +161,7 @@ Falisha owns submission and Ananya fact-checks the numbers (B7). Devpost says a 
 - [ ] Side tracks declared: Perceptron, VEYZL and SideShift (the 3-sponsored cap)
 - [ ] Public GitHub repo linked (b-ananya/beebot is already public)
 
-**Final, before Sun 10:00 AM PDT (aim for 8:30 AM):**
+**Final, before Sun 10:00 AM PDT (aim for 9:30 AM):**
 
 - [ ] All code pushed to the public repo; README explains how to run the app
 - [ ] Description: problem, what it does, how Perceptron is used (name the localization, tracking and video-event features for that track), how it was built, challenges, what's next
@@ -161,8 +185,8 @@ The biggest risk is Perceptron tracking quality on small bees (20 to 30 px at 72
 | --- | --- | --- | --- |
 | Tracking misses small or fast bees | Raika | Overlay wrong on 2+ of 5 clips at A2 (5:30 PM) | Test 1080p; favor farm clips; report honest coverage |
 | Real tracks late for G2 (8:30 PM) | Raika | A3 parser not passing validate by 7:30 PM | Keep the app on mock; ship the 5 working clips first |
-| Draft deadline missed | Falisha | No Devpost page by 9:00 PM | Draft needs only names, Discords, tracks; do it at the 8:30 PM standup |
-| Phase 1 shaky at G3 (12:30 AM) | Falisha | Search or analytics broken at 12:30 AM | Cut Phase 2 as the plan says; the robot becomes a slide |
+| Draft deadline missed | Flora | No Devpost page by 9:00 PM (Flora) | Draft needs only names, Discords, tracks; do it at the 8:30 PM standup |
+| Phase 1 shaky at G3 (1:00 AM) | Falisha | Search or analytics broken at 1:00 AM | Cut Phase 2 as the plan says; the robot becomes a slide |
 | Model switch to Isaac mid-build | Raika | Decision not made by 5:30 PM | Flora's 5-clip test decides; keep Mk1.5 if it's late; the model id is one config line |
 | Credits burned by duplicate calls | Raika | Two cost logs with the same clip and prompt | Cache in git, one paying key per call type, $40 cap |
 | Hosted app fails (memory, ffmpeg) | Falisha | First deploy not up by 2:30 AM | Hugging Face Spaces, or Devpost uses video + screenshots |
@@ -202,18 +226,14 @@ There are 19 disagreements: most are the old design doc against beebot, which be
 | # | Issue | Rule (source) | Resolution |
 | --- | --- | --- | --- |
 | 14 | Tracks: the Devpost overview shows Perceptron and VEYZL only as sponsor logos, but the hacker guide lists them as sponsored side tracks (team confirmed). Perceptron: use its models via the API out of the box, judged on localization, tracking and video event finding. VEYZL: a real audit on a PR, with findings that changed the build | Max 1 title + 3 sponsored side tracks ([Devpost](https://dubhacks-2026.devpost.com/)) | Enter Community Kitchen (title) plus Perceptron, VEYZL and SideShift, which uses all 3 sponsored slots. Add DubHacks Next only if the guide calls it non-sponsored |
-| 15 | The plan has no step for the Saturday draft | Draft before Sat 10:30 PM or no judging (Devpost) | Falisha submits it at 9:30 PM, added to the schedule as gate D0 |
+| 15 | The plan has no step for the Saturday draft | Draft before Sat 10:30 PM or no judging (Devpost) | Flora submits it at 9:30 PM, added to the schedule as gate D0 |
 | 16 | The beebot scaffold (data scripts, clips manifest, truth) was committed at 12:08 PM, before the 12:30 PM start | "Started and completed during DubHacks '26" (Devpost rules); context file: no code before 12:30 counts | Disclose it on Devpost as data preparation; ask an organizer if unsure |
-| 17 | Final deadline: 10:00 AM vs 10:30 AM | Devpost dates page: 10:00 AM PDT; dh26 site and context file: 10:30 AM | Use 10:00 AM; plan to submit by 8:30 AM |
+| 17 | Final deadline: 10:00 AM vs 10:30 AM | Devpost dates page: 10:00 AM PDT; dh26 site and context file: 10:30 AM | Use 10:00 AM; plan to submit by 9:30 AM |
 | 18 | Demo video: plan has a backup video but no Devpost video | "Some side tracks will use a video submission" (Devpost) | Make the backup recording judge-ready (under 3 min) |
-| 19 | Hacking length: 20 h plan | Devpost says 24 h, dh26 says 36 h | Fine either way: the plan ends at 8:30 AM, 1.5 h before the deadline |
+| 19 | Hacking length: 20 h plan | Devpost says 24 h, dh26 says 36 h | PLAN.md assumes 20 straight hours (G4 h17, G5 h19). The team starts at 2:30 PM and sleeps in two shifts, so G3 is 1:00 AM, G4 4:30 AM, G5 8:30 AM and the final 9:30 AM, with a stricter cut list; update PLAN.md once the team agrees |
 
-## Draft changes to claude-gc (after the team approves)
+## Changes to claude-gc
 
-Nothing here has been pushed. Once a human approves, Raika (repo owner) or a Claude with push access makes three changes.
-
-1. **Update README.md** so it points at beebot and this roadmap instead of design-doc.html (done in the same commit as this file).
-2. **Delete design-doc.html** (git history keeps it) or move it to `archive/design-doc-v1.html` with a line on top saying it is outdated.
-3. **Add ROADMAP.md** (this file) and update it as decisions are made (model, assignments).
-
-The suggested README.md is committed alongside this file.
+1. README.md points at beebot and this roadmap instead of design-doc.html.
+2. design-doc.html is outdated; delete it or move it to `archive/` when the team agrees.
+3. Keep this file updated as decisions are made (model, assignments, sleep shifts).

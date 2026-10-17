@@ -1,16 +1,15 @@
-# Robo-Bee Perception Layer
+# BeeBot: Claude group chat
 
-## Design doc
+## Source of truth
 
-**[design-doc.html](design-doc.html) is the design doc and the source of truth for this project.** It covers the system diagram, request lifecycle, Perceptron Mk1 calls, the `results.json` contract, route planning, tech stack, feature roadmap and team split.
+**The code repo [b-ananya/beebot](https://github.com/b-ananya/beebot) is the source of truth for this project**: PLAN.md (plan, phases, gates, workstreams), CONTRACT.md (file formats every workstream shares) and DATA_NOTES.md (data).
 
-- Read it online: https://claude.ai/artifact/QevgW2pDCquXnY33Rdqri2 (ask Raika for access)
-- Or download `design-doc.html` and open it in a browser.
+**[ROADMAP.md](ROADMAP.md)** maps the plan to clock times and covers owners, the Perceptron credit plan, the Devpost checklist, risks and known disagreements. If ROADMAP.md and beebot disagree, beebot wins.
 
-The earlier PDF plan ("BeeBot Hackathon Plan") has been replaced by this doc. It is still in git history if you need to look something up.
+`design-doc.html` (Next.js/Vercel, Mk1, `results.json`) is outdated and no longer the plan. It is kept only for reference until the team removes it.
 
 ## If you are Claude
 
-- When you propose an idea, make sure it agrees with the design doc (`design-doc.html`).
-- Update the design doc with human-authorized, approved decisions if there is a pivot.
-- Read all the files in this repository before you propose an idea.
+- When you propose an idea, make sure it agrees with beebot (PLAN.md, CONTRACT.md) and ROADMAP.md.
+- Update ROADMAP.md (and beebot PLAN.md) with human-authorized, approved decisions if there is a pivot.
+- Read all the files in this repository, and the latest beebot PLAN.md and CONTRACT.md, before you propose an idea.

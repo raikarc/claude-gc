@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Robo-Bee Perception Architecture</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (~72ch) that widens for the diagram and tables; amber marks anything robo-bee, green marks real bees and flowers. */
+:root {
+  --bg: #f6f7f2;
+  --surface: #ffffff;
+  --fg: #1d2420;
+  --muted: #5d6860;
+  --line: #c9cfc4;
+  --accent: #b86e00;        /* honey: robo-bee path, Mk1 */
+  --accent-soft: #fbecd2;
+  --green: #2f6f4e;         /* real bees, flowers */
+  --green-soft: #e1efe6;
+  --code-bg: #eef0ea;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141815; --surface: #1c221e; --fg: #e6ebe4; --muted: #9aa69d; --line: #3a453d;
+    --accent: #f0a83a; --accent-soft: #3a2b12; --green: #7cc59b; --green-soft: #1f3328; --code-bg: #20271f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141815; --surface: #1c221e; --fg: #e6ebe4; --muted: #9aa69d; --line: #3a453d;
+  --accent: #f0a83a; --accent-soft: #3a2b12; --green: #7cc59b; --green-soft: #1f3328; --code-bg: #20271f;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 16px; line-height: 1.6;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 48px 72px;
+  display: flex; flex-direction: column; gap: 56px;
+}
+.prose { max-width: 72ch; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { font-size: 1.15rem; color: var(--fg); max-width: 68ch; }
+.muted { color: var(--muted); }
+header { display: flex; flex-direction: column; gap: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.78rem; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.chip.robo { border-color: var(--accent); color: var(--accent); }
+.chip.real { border-color: var(--green); color: var(--green); }
+code, pre { font-family: var(--mono); font-size: 0.86rem; }
+:not(pre) > code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 16px 18px; border-radius: 8px; overflow-x: auto; margin: 0; line-height: 1.5; }
+.diagram { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.diagram svg { display: block; min-width: 900px; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.85rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend .l-ours::before { background: var(--surface); border: 1.5px solid var(--fg); }
+.legend .l-mk1::before { background: var(--accent-soft); border: 1.5px solid var(--accent); }
+.legend .l-data::before { background: var(--green-soft); border: 1.5px solid var(--green); }
+ol.flow { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 10px; max-width: 72ch; }
+ol.flow li::marker { font-family: var(--mono); color: var(--accent); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--bg); }
+td:first-child { font-weight: 600; white-space: nowrap; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.grid2 > * { min-width: 0; }
+.callout { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 14px 18px; border-radius: 0 8px 8px 0; max-width: 80ch; }
+.formula { font-family: var(--mono); font-size: 0.95rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; overflow-x: auto; }
+.tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.tier { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tier h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.tier .tag { font-family: var(--mono); font-size: 0.72rem; font-weight: 400; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.tier ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 8px; font-size: 0.93rem; }
+.tier li b { font-weight: 600; }
+.risks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.risk { border-top: 2px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.risk h3 { font-size: 1rem; }
+.risk p { font-size: 0.93rem; color: var(--muted); }
+.risk p b { color: var(--fg); font-weight: 600; }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+footer { font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+
+/* SVG diagram */
+.d-group { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.d-glabel { fill: var(--muted); font: 500 12px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.d-box { fill: var(--surface); stroke: var(--fg); stroke-width: 1.4; }
+.d-mk1 { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.8; }
+.d-data { fill: var(--green-soft); stroke: var(--green); stroke-width: 1.4; }
+.d-title { fill: var(--fg); font: 600 14px var(--body); }
+.d-sub { fill: var(--muted); font: 400 12px var(--body); }
+.d-num { fill: var(--accent); font: 500 12px var(--mono); }
+.d-edge { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+.d-edge.hot { stroke: var(--accent); stroke-width: 2; }
+.d-elabel { fill: var(--muted); font: 400 11px var(--mono); }
+.d-arrow { fill: var(--muted); }
+.d-arrow-hot { fill: var(--accent); }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Hackathon architecture proposal</span>
+  <h1>Robo-Bee Perception Architecture</h1>
+  <p class="lede">Visitors upload a video of bees working a flower patch. Perceptron Mk1 finds the flowers, follows the real bees and marks every landing. Our planner turns that into the route a robo-bee should fly, and the web app draws that route on top of the original video.</p>
+  <div class="chips">
+    <span class="chip real">real bees + flowers: green</span>
+    <span class="chip robo">robo-bee path + Mk1: honey</span>
+    <span class="chip">Next.js on Vercel</span>
+    <span class="chip">Python worker on Modal</span>
+    <span class="chip">Supabase</span>
+  </div>
+</header>
+
+<section>
+  <span class="eyebrow">System diagram</span>
+  <h2>One pipeline, two entry points</h2>
+  <p class="prose muted">The same Python pipeline serves the public web app and an offline batch runner over your bee dataset. The web app is a thin shell: it stores uploads, queues jobs and plays back results. The heavy work (ffmpeg, Mk1 calls, path planning) happens in a worker that has no request timeout.</p>
+  <div class="diagram" role="img" aria-label="System diagram: the browser uploads video to Vercel Blob and creates a job through Next.js API routes on Vercel; a Modal Python worker preprocesses the video, calls the Perceptron Mk1 API, fuses results and plans a robo-bee path, then writes results to Supabase, which streams progress back to the browser. A batch CLI feeds the bee dataset into the same worker and exports training data.">
+    <svg viewBox="0 0 1140 530" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker>
+        <marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrow-hot"/></marker>
+      </defs>
+
+      <!-- Browser -->
+      <rect x="20" y="150" width="170" height="120" rx="8" class="d-box"/>
+      <text x="36" y="178" class="d-title">Visitor's browser</text>
+      <text x="36" y="200" class="d-sub">Upload a bee video</text>
+      <text x="36" y="218" class="d-sub">Watch the overlay:</text>
+      <text x="36" y="236" class="d-sub">bee tracks, flowers,</text>
+      <text x="36" y="254" class="d-sub">robo-bee route</text>
+
+      <!-- Vercel group -->
+      <rect x="230" y="30" width="300" height="230" rx="10" class="d-group"/>
+      <text x="246" y="50" class="d-glabel">Vercel</text>
+      <rect x="250" y="60" width="260" height="70" rx="8" class="d-box"/>
+      <text x="266" y="86" class="d-title">Next.js app</text>
+      <text x="266" y="106" class="d-sub">Upload page · results viewer</text>
+      <text x="266" y="122" class="d-sub">canvas overlay synced to video</text>
+      <rect x="250" y="160" width="260" height="70" rx="8" class="d-box"/>
+      <text x="266" y="186" class="d-title">API routes</text>
+      <text x="266" y="206" class="d-sub">POST /api/jobs · upload tokens</text>
+      <text x="266" y="222" class="d-sub">dedupe by video hash</text>
+
+      <!-- Storage group -->
+      <rect x="230" y="300" width="300" height="200" rx="10" class="d-group"/>
+      <text x="246" y="320" class="d-glabel">Storage</text>
+      <rect x="250" y="330" width="260" height="60" rx="8" class="d-data"/>
+      <text x="266" y="355" class="d-title">Vercel Blob</text>
+      <text x="266" y="375" class="d-sub">raw videos · results.json</text>
+      <rect x="250" y="410" width="260" height="70" rx="8" class="d-data"/>
+      <text x="266" y="435" class="d-title">Supabase Postgres</text>
+      <text x="266" y="455" class="d-sub">jobs, stage progress, results index</text>
+      <text x="266" y="471" class="d-sub">Realtime pushes updates</text>
+
+      <!-- Worker group -->
+      <rect x="580" y="30" width="330" height="440" rx="10" class="d-group"/>
+      <text x="596" y="50" class="d-glabel">Pipeline worker · Modal · Python</text>
+      <rect x="600" y="70" width="290" height="75" rx="8" class="d-box"/>
+      <text x="616" y="94" class="d-num">1</text><text x="632" y="94" class="d-title">Preprocess</text>
+      <text x="616" y="114" class="d-sub">ffmpeg: normalize to 720p MP4,</text>
+      <text x="616" y="131" class="d-sub">split into ~20 s chunks with 2 s overlap</text>
+      <rect x="600" y="165" width="290" height="75" rx="8" class="d-box"/>
+      <text x="616" y="189" class="d-num">2</text><text x="632" y="189" class="d-title">Perceive (parallel per chunk)</text>
+      <text x="616" y="209" class="d-sub">flowers · bee tracks · landing clips</text>
+      <text x="616" y="226" class="d-sub">JSON schema output, cached by hash</text>
+      <rect x="600" y="260" width="290" height="75" rx="8" class="d-box"/>
+      <text x="616" y="284" class="d-num">3</text><text x="632" y="284" class="d-title">Fuse</text>
+      <text x="616" y="304" class="d-sub">stitch chunks, stable flower IDs,</text>
+      <text x="616" y="321" class="d-sub">interpolate tracks, link visits</text>
+      <rect x="600" y="355" width="290" height="75" rx="8" class="d-box"/>
+      <text x="616" y="379" class="d-num">4</text><text x="632" y="379" class="d-title">Plan robo-bee route</text>
+      <text x="616" y="399" class="d-sub">score flowers, pick route under</text>
+      <text x="616" y="416" class="d-sub">energy budget, smooth, add hovers</text>
+      <path d="M745,145 V163" class="d-edge" marker-end="url(#ah)"/>
+      <path d="M745,240 V258" class="d-edge" marker-end="url(#ah)"/>
+      <path d="M745,335 V353" class="d-edge" marker-end="url(#ah)"/>
+
+      <!-- Right column -->
+      <rect x="960" y="70" width="160" height="75" rx="8" class="d-data"/>
+      <text x="976" y="96" class="d-title">Bee dataset</text>
+      <text x="976" y="116" class="d-sub">batch CLI:</text>
+      <text x="976" y="133" class="d-sub">modal run batch.py</text>
+      <rect x="960" y="165" width="160" height="75" rx="8" class="d-mk1"/>
+      <text x="976" y="191" class="d-title">Perceptron Mk1</text>
+      <text x="976" y="211" class="d-sub">video + image VLM</text>
+      <text x="976" y="228" class="d-sub">points · boxes · clips</text>
+      <rect x="960" y="355" width="160" height="75" rx="8" class="d-data"/>
+      <text x="976" y="381" class="d-title">Training export</text>
+      <text x="976" y="401" class="d-sub">JSONL / Parquet</text>
+      <text x="976" y="418" class="d-sub">for robot policies</text>
+
+      <!-- Edges -->
+      <path d="M190,180 H220 V95 H248" class="d-edge" marker-end="url(#ah)"/>
+      <text x="140" y="140" class="d-elabel">open app</text>
+      <path d="M70,270 V360 H248" class="d-edge hot" marker-end="url(#ahh)"/>
+      <text x="80" y="352" class="d-elabel">video, direct upload</text>
+      <path d="M380,130 V158" class="d-edge" marker-end="url(#ah)"/>
+      <text x="388" y="149" class="d-elabel">create job</text>
+      <path d="M510,195 H550 V105 H598" class="d-edge" marker-end="url(#ah)"/>
+      <text x="520" y="186" class="d-elabel">webhook</text>
+      <path d="M600,415 H560 V445 H512" class="d-edge" marker-end="url(#ah)"/>
+      <text x="516" y="500" class="d-elabel" visibility="hidden">.</text>
+      <text x="540" y="462" class="d-elabel">results</text>
+      <path d="M250,450 H140 V272" class="d-edge" marker-end="url(#ah)"/>
+      <text x="150" y="442" class="d-elabel">live progress</text>
+      <path d="M958,107 H892" class="d-edge" marker-end="url(#ah)"/>
+      <path d="M892,195 H958" class="d-edge hot" marker-start="url(#ahh)" marker-end="url(#ahh)"/>
+      <text x="898" y="258" class="d-elabel">chunks → JSON</text>
+      <path d="M892,392 H958" class="d-edge" marker-end="url(#ah)"/>
+    </svg>
+  </div>
+  <div class="legend">
+    <span class="l-ours">Code we write</span>
+    <span class="l-mk1">Perceptron Mk1 (external API)</span>
+    <span class="l-data">Data in or out</span>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Request lifecycle</span>
+  <h2>What happens when someone uploads a video</h2>
+  <ol class="flow">
+    <li>The browser asks <code>/api/jobs</code> for an upload token and sends the file <b>straight to Vercel Blob</b>. Vercel functions cap request bodies at 4.5 MB, so videos must never pass through our API.</li>
+    <li>The API hashes the video. If we have seen it before, it returns the cached result immediately. Otherwise it inserts a <code>jobs</code> row in Supabase and calls the Modal worker's webhook.</li>
+    <li>The worker pulls the video, normalizes it with ffmpeg and cuts it into overlapping ~20 s chunks so each Mk1 request stays well inside the 32K-token context.</li>
+    <li>Each chunk gets three Mk1 requests in parallel (flowers, bee tracks, landing clips). Every response is validated against a Pydantic model and cached by <code>chunk hash + prompt version</code>.</li>
+    <li>The fuser merges chunks into one timeline. The planner produces the robo-bee route. The worker writes <code>results.json</code> to Blob and flips the job to <code>done</code>.</li>
+    <li>The browser, subscribed to the job row through Supabase Realtime, shows stage-by-stage progress and then loads the overlay viewer.</li>
+  </ol>
+</section>
+
+<section>
+  <span class="eyebrow">Perception layer</span>
+  <h2>What we ask Mk1</h2>
+  <p class="prose muted">Mk1 takes MP4 or WebM, answers grounded questions about it, and returns spatial outputs (points, boxes, polygons, tracks and timestamped clips) when you request them through <code>annotation_format</code>. It also accepts a JSON schema in <code>response_format</code>, which is what keeps our outputs machine-readable.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Call</th><th>Input</th><th>Prompt (sketch)</th><th>Output we keep</th></tr></thead>
+      <tbody>
+        <tr><td>Flowers</td><td>3–5 keyframes per chunk</td><td>“Box every flower. Label each as bud, open or wilted.”</td><td>box, bloom state, confidence</td></tr>
+        <tr><td>Bee tracks</td><td>Video chunk</td><td>“Track each bee. Return a point per sampled frame with a consistent bee id.”</td><td>bee id, [t, x, y] points</td></tr>
+        <tr><td>Landings</td><td>Video chunk</td><td>“Return clips where a bee lands on a flower and starts foraging.”</td><td>start, end, bee id, location</td></tr>
+        <tr><td>Few-shot landing</td><td>Reference clip + chunk</td><td>In-context video learning: “Find events like this reference.”</td><td>Second opinion for the landing call (stretch)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <h3>Calling it from the worker</h3>
+      <p class="muted" style="font-size:0.93rem">Mk1 speaks an OpenAI-compatible API, so the stock SDK works. Confirm the base URL and the exact video content-part shape on docs.perceptron.inc before wiring this up.</p>
+<pre>from openai import OpenAI
+client = OpenAI(base_url=PERCEPTRON_BASE_URL,
+                api_key=os.environ["PERCEPTRON_API_KEY"])
+
+resp = client.chat.completions.create(
+    model="perceptron-mk1",
+    messages=[{"role": "user", "content": [
+        video_part(chunk_url),          # per docs
+        {"type": "text", "text": TRACK_PROMPT},
+    ]}],
+    response_format={"type": "json_schema",
+                     "json_schema": BeeTracks.schema()},
+    extra_body={"annotation_format": "point"},
+)
+tracks = BeeTracks.model_validate_json(
+    resp.choices[0].message.content)</pre>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <h3>The contract: results.json</h3>
+      <p class="muted" style="font-size:0.93rem">Fix this file on hour one and commit a hand-written mock. The frontend and the planner then build against it while perception is still being tuned. All coordinates are normalized to 0–1.</p>
+<pre>{
+  "video": {"duration": 42.0, "w": 1280, "h": 720},
+  "flowers": [{"id": "f3", "box": [0.41,0.52,0.47,0.60],
+               "state": "open", "visits": 4, "score": 0.82}],
+  "bee_tracks": [{"id": "b1",
+                  "points": [[0.0,0.12,0.30], [0.5,0.15,0.33]]}],
+  "visits": [{"bee": "b1", "flower": "f3",
+              "start": 12.4, "end": 15.1}],
+  "robobee": {
+    "mode": "complement",
+    "waypoints": [
+      {"t": 0.0, "x": 0.05, "y": 0.50, "action": "fly"},
+      {"t": 3.2, "x": 0.44, "y": 0.55, "action": "hover",
+       "flower": "f7", "dwell": 2.1}]
+  }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">From perception to a flight path</span>
+  <h2>How the planner picks where the robo-bee goes</h2>
+  <p class="prose">Mk1 tells us what is in the scene. Deciding where to go is our own code, which keeps it deterministic, cheap to rerun and easy to explain in the demo. The planner scores every open flower, then routes through the best ones.</p>
+  <div class="formula">score(flower) = open_confidence × attractiveness × (1 − coverage)<br>
+attractiveness = real-bee visits and dwell time, normalized across the patch<br>
+coverage = recent visits, decaying with time since the last landing</div>
+  <div class="grid2">
+    <div class="prose" style="display:flex;flex-direction:column;gap:10px">
+      <h3>Two modes, one toggle</h3>
+      <p><b>Complement</b> (default) sends the robo-bee to flowers bees like but have not reached lately, which is the gap a pollinator robot should fill. <b>Imitate</b> sets coverage to zero and reproduces where real bees went, which is what you want when generating training demonstrations.</p>
+    </div>
+    <div class="prose" style="display:flex;flex-direction:column;gap:10px">
+      <h3>Routing</h3>
+      <p>Pick flowers greedily by score per unit distance until an energy budget (a slider in the UI) runs out, which is a quick heuristic for the orienteering problem. Smooth the path with a Catmull-Rom spline and hover at each flower for the median real-bee dwell time.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Design around these</span>
+  <h2>Constraints that shape the design</h2>
+  <div class="risks">
+    <div class="risk"><h3>Mk1 samples video at up to 2 FPS</h3><p>Bees move fast, so tracks will be sparse. <b>Fix:</b> interpolate between points in the fuser. Stretch: use Mk1 detections as anchors and fill in frames with a classical tracker such as OpenCV CSRT or ByteTrack.</p></div>
+    <div class="risk"><h3>32K-token context</h3><p>Long videos cannot go in one request. <b>Fix:</b> chunk with overlap, then match bee ids across the overlap by nearest position in the fuser.</p></div>
+    <div class="risk"><h3>Vercel function limits</h3><p>Body size and execution time rule out processing video on Vercel. <b>Fix:</b> direct-to-Blob uploads and an external worker. Vercel only ever handles small JSON.</p></div>
+    <div class="risk"><h3>The route is 2D, in image space</h3><p>A single camera gives no depth, so the route is a projection. <b>Say so in the demo.</b> Stretch: monocular depth estimation to lift the route into 3D.</p></div>
+    <div class="risk"><h3>Moving cameras</h3><p>Handheld footage shifts flower positions between frames. <b>Fix:</b> favor tripod clips from the dataset for the demo. Stretch: stabilize with ffmpeg <code>vidstab</code> during preprocessing.</p></div>
+    <div class="risk"><h3>Live demo latency</h3><p>A minute of video means dozens of Mk1 calls. <b>Fix:</b> precompute three showcase videos and cache by hash, so the live upload is a bonus rather than the whole demo.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Tech stack</span>
+  <h2>What to build it with</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Next.js (App Router), TypeScript, Tailwind</td><td>Deploys to Vercel with zero config and keeps API routes next to the UI.</td></tr>
+        <tr><td>Overlay viewer</td><td>HTML5 video + Canvas 2D, synced with <code>requestVideoFrameCallback</code></td><td>Frame-accurate drawing of tracks, flower boxes and the animated robo-bee without a heavy library.</td></tr>
+        <tr><td>Uploads</td><td>Vercel Blob client uploads</td><td>Large files go straight from the browser to storage and skip the function body limit.</td></tr>
+        <tr><td>Jobs + live progress</td><td>Supabase Postgres + Realtime</td><td>One service gives a jobs table and push updates to the browser, with no polling.</td></tr>
+        <tr><td>Worker</td><td>Modal (Python 3.12, ffmpeg, numpy, scipy)</td><td>No timeouts, parallel fan-out per chunk, and a web endpoint for the webhook. The same functions run as the batch CLI.</td></tr>
+        <tr><td>Perception</td><td>Perceptron Mk1 via the OpenAI Python SDK</td><td>OpenAI-compatible endpoint. Keep an OpenRouter key as a fallback route to the same model.</td></tr>
+        <tr><td>Validation</td><td>Pydantic models → JSON schema</td><td>One definition both constrains Mk1's output and validates it.</td></tr>
+        <tr><td>Planning</td><td>numpy + scipy splines; OR-Tools optional</td><td>Greedy routing is enough for a demo. OR-Tools gives exact orienteering if time allows.</td></tr>
+        <tr><td>Training export</td><td>JSONL / Parquet, optionally a Hugging Face dataset</td><td>Standard formats that robot-learning tooling already reads.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="prose muted" style="font-size:0.93rem">An all-TypeScript alternative is Inngest or Trigger.dev for the job orchestration plus a small container for ffmpeg. It means one language, but you lose the easy parallel fan-out and the shared batch CLI that Modal gives you.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Features and expansions</span>
+  <h2>What to ship, in order</h2>
+  <div class="tiers">
+    <div class="tier">
+      <h3>MVP <span class="tag">must demo</span></h3>
+      <ul>
+        <li><b>Upload and overlay:</b> real bee tracks in green, flowers boxed, robo-bee route in honey with an animated bee sprite.</li>
+        <li><b>Visit timeline</b> under the video. Click a landing to jump to it.</li>
+        <li><b>Stage progress</b> while the job runs.</li>
+        <li><b>Three precomputed showcase videos</b> on the home page.</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <h3>Stretch <span class="tag">if time allows</span></h3>
+      <ul>
+        <li><b>Complement / imitate toggle</b> and an <b>energy-budget slider</b> that replan instantly in the browser from cached perception.</li>
+        <li><b>Pollination heatmap</b> showing which flowers were covered and which were missed.</li>
+        <li><b>Coverage score:</b> real bees alone vs real bees plus robo-bee.</li>
+        <li><b>Swarm mode:</b> split flowers across N robo-bees with k-means so their routes don't overlap.</li>
+        <li><b>Ask the video:</b> free-text questions such as “Which flowers did no bee visit?”, answered with Mk1 video Q&amp;A.</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <h3>Moonshot <span class="tag">pitch slide</span></h3>
+      <ul>
+        <li><b>Training data export</b> of (frame, state, action) pairs for imitation learning, built from every video in the dataset.</li>
+        <li><b>Human-in-the-loop correction:</b> drag a wrong point to fix it, and the fix becomes a training label.</li>
+        <li><b>3D simulation</b> in PyBullet or Isaac Sim using monocular depth.</li>
+        <li><b>Live feed</b> from a drone or field camera, run in short rolling windows.</li>
+        <li><b>Plant species and bloom stage</b> identification to prioritize crops.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Team split</span>
+  <h2>Four parallel tracks</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Track</th><th>Owns</th><th>Done when</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Upload flow, overlay viewer, timeline, progress UI</td><td>The mock <code>results.json</code> plays back correctly over a real video.</td></tr>
+        <tr><td>Perception</td><td>Mk1 prompts, schemas, chunking, caching</td><td>Three dataset videos produce valid per-chunk JSON.</td></tr>
+        <tr><td>Planner</td><td>Fuser, flower scoring, routing, smoothing</td><td>Turns perception JSON into a route that looks right on the overlay.</td></tr>
+        <tr><td>Infra + data</td><td>Modal worker, Supabase, Blob, batch CLI, showcase videos</td><td>An upload on the deployed Vercel app reaches <code>done</code> end to end.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">Agree on <code>results.json</code> before anyone writes code. It is the only interface between the four tracks, so if it is fixed early, nobody waits on anybody.</div>
+</section>
+
+<footer>
+  <span>Mk1 facts used here (model id <code>perceptron-mk1</code>, MP4/WebM input, up to 2 FPS sampling, 32K context, JSON-schema output, <code>annotation_format</code> for points, boxes, polygons and clips) come from public listings. Check them against the official docs at docs.perceptron.inc before you build.</span>
+  <span>Sources: <a href="https://openrouter.ai/perceptron/perceptron-mk1/api">OpenRouter model page</a> · <a href="https://www.benchlm.ai/blog/posts/perceptron-mk1-frontier-video-models">BenchLM overview</a></span>
+</footer>
+
+</div>
